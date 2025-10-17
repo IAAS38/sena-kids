@@ -5,9 +5,6 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Señakids — Aprende LSM</title>
- <link rel="manifest" href="./manifest.json">
-  <meta name="theme-color" content="#572364">
-
 <style>
   :root{
     --primary:#572364;
@@ -648,9 +645,12 @@ document.getElementById('resetProgress').addEventListener('click', ()=>{
 showModule(modulesData[0].id);
 updateGlobalScoreDisplay();
 
-  <script>
- <!-- PWA: registrar Service Worker -->
- <script>
+</script>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#572364">
+
+<!-- PWA: registrar Service Worker -->
+<script>
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
       navigator.serviceWorker.register("service-worker.js")
@@ -658,7 +658,5 @@ updateGlobalScoreDisplay();
         .catch(err => console.error("Error al registrar el SW:", err));
     });
   }
-  
-  </script>
 </body>
 </html>
