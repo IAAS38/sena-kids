@@ -399,13 +399,19 @@ function startConversaciones(){
     {text: 'Di "Sí" si te gusta el color rojo', pattern: ['si','?color']},
     {text: 'Pregunta "¿Dónde está?" + objeto (animal)', pattern: ['dondeesta','?animal']},
     {text: 'Saluda y di tu día (ej: lunes)', pattern: ['hola','?dia']},
+    {text: 'Saluda y di tu mes (ej: enero)', pattern: ['hola','?mes']},
+    {text: 'Saluda y di tu día (ej: lunes) + mes (ej: enero)', pattern: ['hola','?dia','?mes']},
+    {text: 'Di numero (ej: 1) + mes (ej: enero)', pattern: ['?numero','?mes']},
     {text: 'Di "No" si no te gusta el animal', pattern: ['no','?animal']}
   ];
 
-  // Build concrete questions by substituting ?animal/?color/?dia with pool items
+  // Build concrete questions by substituting ?animal/?color/?dia/?mes/?numero with pool items
   const animals = pool.filter(p=>p.module==='animales');
   const colors = pool.filter(p=>p.module==='colores');
   const dias = pool.filter(p=>p.module==='dias');
+  const meses = pool.filter(p=>p.module==='meses');
+  const numeros = pool.filter(p=>p.module==='numeros');
+
 
   const questions = [];
   convPrompts.forEach(cp=>{
@@ -416,6 +422,8 @@ function startConversaciones(){
         if(token==='?animal') pattern.push( animals[Math.floor(Math.random()*animals.length)] );
         else if(token==='?color') pattern.push( colors[Math.floor(Math.random()*colors.length)] );
         else if(token==='?dia') pattern.push( dias[Math.floor(Math.random()*dias.length)] );
+        else if(token==='?mes') pattern.push( meses[Math.floor(Math.random()*meses.length)] );
+        else if(token==='?numero') pattern.push( numeros[Math.floor(Math.random()*numeros.length)] );
         else pattern.push(token); // literal token like 'hola' (string)
       });
       questions.push({text: cp.text, pattern});
@@ -636,6 +644,19 @@ document.getElementById('resetProgress').addEventListener('click', ()=>{
 /* ---------- Initialize: show first module by default ---------- */
 showModule(modulesData[0].id);
 updateGlobalScoreDisplay();
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#572364">
+
+<!-- PWA: registrar Service Worker -->
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("service-worker.js")
+        .then(reg => console.log("Service Worker registrado:", reg))
+        .catch(err => console.error("Error al registrar el SW:", err));
+    });
+  }
 
 </script>
 </body>
