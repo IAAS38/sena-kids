@@ -3,8 +3,8 @@ const urlsToCache = [
   "./",
   "./index.html",
   "./manifest.json",
-  "./img/icon-192.png",
-  "./img/icon-512.png"
+  "./ima/icon-192.png",
+  "./ima/icon-512.png"
 ];
 
 // Instalar y guardar en caché
@@ -35,3 +35,4 @@ self.addEventListener("activate", event => {
     })
   );
 });
+
