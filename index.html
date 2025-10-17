@@ -1,56 +1,664 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <link href="https://fonts.googleapis.com/css2?family=Chewy&display=swap" rel="stylesheet">
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Señakids — Aprende LSM</title>
-
-  <!-- Agrega el manifest y color del tema DENTRO del head -->
-  <link rel="manifest" href="./manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Chewy&display=swap" rel="stylesheet">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Señakids — Aprende LSM</title>
+ <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#572364">
 
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Chewy', cursive;
-      background-color: #f8f8f8;
-      color: #333;
-      text-align: center;
-    }
-    header {
-      background-color: #572364;
-      color: white;
-      padding: 20px;
-      font-size: 2em;
-    }
-    .contenedor {
-      padding: 20px;
-    }
-    video {
-      max-width: 100%;
-      border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    }
-  </style>
+<style>
+  :root{
+    --primary:#572364;
+    --accent:#8184DB;
+    --mint:#50C5B7;
+    --pink:#FFC1D7;
+    --card:#c8a2c8;
+    --text:#14202b;
+    --muted:#5b6b74;
+  }
+  html,body{height:100%; margin:0; font-family:"Chewy",lato, system-ui, abscissa, sans-serif; background: linear-gradient(180deg,#fff 0%, #f7f5ff 100%); color:var(--text); font-size: 18px;}
+  .app{max-width:1100px; margin:18px auto; padding:18px;}
+  header{display:flex; align-items:center; gap:14px; margin-bottom:12px;}
+  .logo-wrap{display:flex; align-items:center; gap:12px; background:linear-gradient(135deg,var(--accent),var(--primary)); padding:8px 12px; border-radius:14px; box-shadow: 0 8px 24px rgba(83,58,113,0.12); color:white;}
+  .logo-wrap svg{width:46px; height:46px; flex-shrink:0;}
+  h1{margin:0; font-size:1.6rem; line-height:1;}
+  .subtitle{margin:0; font-size:0.95rem; color:var(--muted); margin-top:6px;}
+  nav{display:flex; gap:8px; flex-wrap:wrap; margin:14px 0;}
+  .btn{background:var(--card); border:1px solid rgba(20,32,43,.06); padding:8px 12px; border-radius:12px; cursor:pointer; box-shadow: 0 6px 18px rgba(15,20,30,0.03); font-weight:600;}
+  .btn.primary{background: linear-gradient(90deg,var(--mint),var(--accent)); color:white; border:0; box-shadow:0 10px 30px rgba(81,138,164,.12);}
+  .modules-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; margin-bottom:18px;}
+  .card{background:var(--card); padding:14px; border-radius:16px; box-shadow:0 10px 30px rgba(83,58,113,0.06); border:1px solid rgba(10,30,40,.03);}
+  .module-card h3{margin:0 0 6px 0; color:var(--primary);}
+  .module-card p{margin:0; color:var(--muted); font-size:0.95rem;}
+  main{display:grid; gap:16px;}
+  .module-area{display:none;}
+  .module-area.active{display:block;}
+  .items-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(110px,1fr)); gap:10px; margin-top:10px;}
+  .item{background:linear-gradient(180deg,#fff,#fff); border-radius:12px; padding:8px; text-align:center; min-height:120px; display:flex; flex-direction:column; gap:8px; align-items:center; justify-content:flex-start; border:3px solid rgba(129,132,219,0.08);}
+  .item img{max-width:100%; height:72px; object-fit:contain; border-radius:8px;}
+  .placeholder{width:100%; height:72px; display:flex; align-items:center; justify-content:center; border-radius:8px; background: linear-gradient(180deg, var(--pink), #fff); color:var(--muted); font-size:0.9rem; padding:6px; text-align:center;}
+  .item-title{font-weight:700; color:var(--primary);}
+  .quiz{margin-top:12px; display:flex; flex-direction:column; gap:8px;}
+  .question{background: linear-gradient(180deg,#fcfcff,#f7f5ff); padding:12px; border-radius:12px; border:1px solid rgba(129,132,219,0.06);}
+  .choices{display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-top:8px;}
+  .choice{padding:8px; border-radius:10px; background:white; cursor:pointer; border:2px solid rgba(80,197,183,0.06); min-height:64px; display:flex; align-items:center; justify-content:center; gap:8px; font-weight:600;}
+  .choice.correct{outline:4px solid rgba(80,197,183,0.14);}
+  .choice.wrong{outline:4px solid rgba(255,51,85,0.12);}
+  footer{margin-top:18px; display:flex; justify-content:space-between; gap:10px; align-items:center; flex-wrap:wrap;}
+  .small{font-size:0.86rem; color:var(--muted);}
+  .score{font-weight:800; color:var(--primary);}
+  .topbar {margin-left:auto; display:flex; gap:10px; align-items:center;}
+  .pill{background:linear-gradient(90deg,var(--pink),#fff); padding:6px 10px; border-radius:999px; font-weight:700; color:var(--primary); border:1px solid rgba(129,132,219,0.06);}
+  .conversation-choice {display:flex; gap:6px; align-items:center; justify-content:center; padding:6px; border-radius:10px; background:linear-gradient(180deg,#fff,#fbfbff); border:1px solid rgba(83,58,113,0.04);}
+  .thumbs {display:flex; gap:6px; align-items:center;}
+  .thumbs img{width:38px;height:38px; object-fit:contain; border-radius:6px; border:1px solid rgba(10,30,40,.03); background:white;}
+  @media (max-width:640px){ .choices{grid-template-columns:1fr;} .items-grid{grid-template-columns:repeat(auto-fit,minmax(140px,1fr));} }
+</style>
 </head>
-
 <body>
-  <header>Señakids — Aprende LSM</header>
-  <div class="contenedor">
-    <h2>Bienvenido</h2>
-    <p>Explora las señas básicas del Lenguaje de Señas Mexicano.</p>
+<div class="app">
+  <header>
+  <div class="logo-wrap card">
+  <img src="img/logo.png" alt="Señakids" style="width:60px;height:60px;border-radius:12px;">
+  <div style="display:flex;flex-direction:column;">
+    <div style="font-weight:900;font-size:1.05rem">Señakids</div>
+    <div style="font-size:0.75rem;color:rgba(255,255,255,0.9)">Las manos tambien hablan</div>
   </div>
+</div>
 
-  <!-- PWA: registrar Service Worker -->
-  <script>
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./service-worker.js")
-          .then(reg => console.log("Service Worker registrado:", reg))
-          .catch(err => console.error("Error al registrar el SW:", err));
+    <div style="margin-left:12px;">
+      <h1>Señakids</h1>
+      <p class="subtitle">Módulos interactivos para niños</p>
+    </div>
+
+    <div class="topbar">
+      <div class="pill">Puntos: <span id="globalScore" class="score">0</span></div>
+    </div>
+  </header>
+
+  <nav aria-label="Módulos">
+    <div id="modulesButtons"></div>
+  </nav>
+
+  <main>
+    <div id="modulesContainer"></div>
+  </main>
+
+  <footer>
+    <div class="small">Personaliza las imágenes en las carpetas <code>img/</code> y abre con Ctrl+O.</div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn" id="resetProgress">Reiniciar progreso</button>
+      <button class="btn primary" id="downloadTemplate">Descargar plantilla (.txt)</button>
+    </div>
+  </footer>
+</div>
+
+<script>
+/* Señakids — un solo archivo
+   Cambios solicitados implementados:
+   - Detecta .gif/.png/.jpg (intenta .gif primero)
+   - Módulos actualizados y nuevos: dias, conversaciones
+   - Se quitaron descripciones y la sección de instrucciones
+   - Conversaciones es tipo quiz que pide combinar señas
+*/
+
+const STORAGE_KEY = 'senakids_score_v1';
+function loadScore(){ const s = localStorage.getItem(STORAGE_KEY); return s ? JSON.parse(s) : {points:0}; }
+function saveScore(obj){ localStorage.setItem(STORAGE_KEY, JSON.stringify(obj)); updateGlobalScoreDisplay(); }
+function addPoints(n){ const s = loadScore(); s.points = (s.points||0)+n; saveScore(s); }
+function resetScore(){ localStorage.removeItem(STORAGE_KEY); updateGlobalScoreDisplay(); }
+function updateGlobalScoreDisplay(){ const s = loadScore(); document.getElementById('globalScore').textContent = s.points||0; }
+
+/* Helper DOM */
+function createElem(tag, props={}, ...children){
+  const el = document.createElement(tag);
+  for(const k in props){
+    if(k==='class') el.className = props[k];
+    else if(k==='html') el.innerHTML = props[k];
+    else el.setAttribute(k, props[k]);
+  }
+  for(const c of children) if(typeof c==='string') el.appendChild(document.createTextNode(c)); else if(c) el.appendChild(c);
+  return el;
+}
+
+/* ---------- DATA ---------- */
+/* Items: key, name, imgBase (without extension), module (for path) */
+const modulesData = [
+  {
+    id:'alfabeto',
+    title:'Alfabeto (LSM)',
+    items: (function(){
+      const letters = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ".split('');
+      return letters.map(l => ({
+        key: l,
+        name: l,
+        imgBase: `img/alfabeto/${l}` // will try gif then png then jpg
+      }));
+    })()
+  },
+
+  {
+    id:'numeros',
+    title:'Números (1–10)',
+    items: [
+      {key:'1', name:'1', imgBase:'img/numeros/1'},
+      {key:'2', name:'2', imgBase:'img/numeros/2'},
+      {key:'3', name:'3', imgBase:'img/numeros/3'},
+      {key:'4', name:'4', imgBase:'img/numeros/4'},
+      {key:'5', name:'5', imgBase:'img/numeros/5'},
+      {key:'6', name:'6', imgBase:'img/numeros/6'},
+      {key:'7', name:'7', imgBase:'img/numeros/7'},
+      {key:'8', name:'8', imgBase:'img/numeros/8'},
+      {key:'9', name:'9', imgBase:'img/numeros/9'}, // prefer gif (will try gif first)
+      {key:'10', name:'10', imgBase:'img/numeros/10'} // prefer gif
+    ]
+  },
+
+  {
+    id:'colores',
+    title:'Colores',
+    items:[
+      {key:'rojo', name:'Rojo', imgBase:'img/colores/rojo'},
+      {key:'azul', name:'Azul', imgBase:'img/colores/azul'},
+      {key:'verde', name:'Verde', imgBase:'img/colores/verde'},
+      {key:'amarillo', name:'Amarillo', imgBase:'img/colores/amarillo'},
+      {key:'negro', name:'Negro', imgBase:'img/colores/negro'},
+      {key:'blanco', name:'Blanco', imgBase:'img/colores/blanco'},
+      {key:'morado', name:'Morado', imgBase:'img/colores/morado'},
+      {key:'naranja', name:'Naranja', imgBase:'img/colores/naranja'},
+      {key:'rosa', name:'Rosa', imgBase:'img/colores/rosa'},
+      {key:'cafe', name:'Café', imgBase:'img/colores/cafe'}
+    ]
+  },
+
+  {
+    id:'animales',
+    title:'Animales',
+    items:[
+      {key:'raton', name:'Ratón', imgBase:'img/animales/raton'},
+      {key:'pato', name:'Pato', imgBase:'img/animales/pato'},
+      {key:'perro', name:'Perro', imgBase:'img/animales/perro'},
+      {key:'gato', name:'Gato', imgBase:'img/animales/gato'},
+      {key:'pajaro', name:'Pájaro', imgBase:'img/animales/pajaro'},
+      {key:'elefante', name:'Elefante', imgBase:'img/animales/elefante'},
+      {key:'mono', name:'Mono', imgBase:'img/animales/mono'},
+      {key:'leon', name:'León', imgBase:'img/animales/leon'},
+      {key:'cocodrilo', name:'Cocodrilo', imgBase:'img/animales/cocodrilo'},
+      {key:'caballo', name:'Caballo', imgBase:'img/animales/caballo'}
+    ]
+  },
+
+  {
+    id:'expresiones',
+    title:'Expresiones cotidianas',
+    items:[
+      {key:'hola', name:'Hola', imgBase:'img/expresiones/hola'},
+      {key:'gracias', name:'Gracias', imgBase:'img/expresiones/gracias'},
+      {key:'por-favor', name:'Por favor', imgBase:'img/expresiones/por-favor'},
+      {key:'adios', name:'Adiós', imgBase:'img/expresiones/adios'},
+      {key:'si', name:'Sí', imgBase:'img/expresiones/si'},
+      {key:'no', name:'No', imgBase:'img/expresiones/no'}
+    ]
+  },
+
+  {
+    id:'frases',
+    title:'Frases de conversación',
+    items:[
+      {key:'comoestas', name:'¿Cómo estás?', imgBase:'img/frases/como-estas'},
+      {key:'me-gusta', name:'Me gusta', imgBase:'img/frases/me-gusta'}, // changed from me gustaria
+      {key:'dondeesta', name:'¿Dónde está?', imgBase:'img/frases/donde-esta'},
+      {key:'tengohambre', name:'Tengo hambre', imgBase:'img/frases/tengo-hambre'}
+    ]
+  },
+
+  {
+    id:'dias',
+    title:'Días de la semana',
+    items:[
+      {key:'lunes', name:'Lunes', imgBase:'img/dias/lunes'},
+      {key:'martes', name:'Martes', imgBase:'img/dias/martes'},
+      {key:'miercoles', name:'Miércoles', imgBase:'img/dias/miercoles'},
+      {key:'jueves', name:'Jueves', imgBase:'img/dias/jueves'},
+      {key:'viernes', name:'Viernes', imgBase:'img/dias/viernes'},
+      {key:'sabado', name:'Sábado', imgBase:'img/dias/sabado'},
+      {key:'domingo', name:'Domingo', imgBase:'img/dias/domingo'}
+    ]
+  },
+
+  {
+    id:'meses',
+    title:'Meses del año',
+    items:[
+      {key:'enero', name:'Enero', imgBase:'img/meses/enero'},
+      {key:'febrero', name:'Febrero', imgBase:'img/meses/febrero'},
+      {key:'marzo', name:'Marzo', imgBase:'img/meses/marzo'},
+      {key:'abril', name:'Abril', imgBase:'img/meses/abril'},
+      {key:'mayo', name:'Mayo', imgBase:'img/meses/mayo'},
+      {key:'junio', name:'Junio', imgBase:'img/meses/junio'},
+      {key:'julio', name:'Julio', imgBase:'img/meses/julio'},
+      {key:'agosto', name:'Agosto', imgBase:'img/meses/agosto'},
+      {key:'septiembre', name:'Septiembre', imgBase:'img/meses/septiembre'},
+      {key:'octubre', name:'Octubre', imgBase:'img/meses/octubre'},
+      {key:'noviembre', name:'Noviembre', imgBase:'img/meses/noviembre'},
+      {key:'diciembre', name:'Diciembre', imgBase:'img/meses/diciembre'}
+    ]
+  },
+
+  {
+    id:'conversaciones',
+    title:'Conversaciones (combina señas)',
+    items: [] // questions generated dynamically from pool
+  }
+];
+
+/* Helper to flatten pool of items for quizzes */
+function getPool(){
+  let pool = [];
+  modulesData.forEach(m=>{
+    if(m.id !== 'conversaciones') pool = pool.concat(m.items.map(it => ({...it, module: m.id})));
+  });
+  return pool;
+}
+
+/* ---------- Rendering UI ---------- */
+const modulesButtons = document.getElementById('modulesButtons');
+const modulesContainer = document.getElementById('modulesContainer');
+
+function renderMenuAndModules(){
+  modulesData.forEach(mod => {
+    const btn = createElem('button',{class:'btn', id:'btn_'+mod.id}, mod.title);
+    btn.addEventListener('click', ()=> showModule(mod.id));
+    modulesButtons.appendChild(btn);
+
+    const area = createElem('section',{class:'card module-area', id:'modarea_'+mod.id});
+    area.appendChild(createElem('h2',{},mod.title));
+    // Items grid (except conversaciones: render later)
+    if(mod.id !== 'conversaciones'){
+      const grid = createElem('div',{class:'items-grid', id:'grid_'+mod.id});
+      mod.items.forEach(it => {
+        const itemCard = createElem('div',{class:'item'});
+        const img = createElem('img',{alt:it.name});
+        // will set src with fallback
+        setImageWithFallback(img, it.imgBase);
+        const title = createElem('div',{class:'item-title'}, it.name);
+        itemCard.appendChild(img);
+        itemCard.appendChild(title);
+        grid.appendChild(itemCard);
       });
+      area.appendChild(grid);
+
+      // Quiz
+      const quizBox = createElem('div',{class:'quiz'});
+      quizBox.appendChild(createElem('h3',{},'Mini cuestionario'));
+      const quizArea = createElem('div',{id:'quiz_'+mod.id});
+      quizBox.appendChild(quizArea);
+      const startBtn = createElem('button',{class:'btn primary'}, 'Comenzar quiz');
+      startBtn.addEventListener('click', ()=> startQuiz(mod.id));
+      quizBox.appendChild(startBtn);
+      area.appendChild(quizBox);
+    } else {
+      // Conversaciones module area: placeholder for generated quiz
+      const convBox = createElem('div',{class:'quiz'});
+      convBox.appendChild(createElem('h3',{},'Conversaciones — combina señas'));
+      convBox.appendChild(createElem('div',{id:'quiz_conversaciones'}));
+      const startBtn = createElem('button',{class:'btn primary'}, 'Comenzar actividad');
+      startBtn.addEventListener('click', ()=> startConversaciones());
+      convBox.appendChild(startBtn);
+      area.appendChild(convBox);
     }
+
+    modulesContainer.appendChild(area);
+  });
+
+  // Integrator (repaso final)
+  const integratorArea = createElem('section',{class:'card module-area', id:'modarea_integrador'});
+  integratorArea.appendChild(createElem('h2',{},'Módulo integrador — Repaso final'));
+  integratorArea.appendChild(createElem('p',{class:'small'}, 'Mezcla preguntas de todos los módulos. 10 preguntas.'));
+  integratorArea.appendChild(createElem('div',{id:'quiz_integrador'}));
+  const startInt = createElem('button',{class:'btn primary'}, 'Comenzar integrador');
+  startInt.addEventListener('click', ()=> startIntegrator());
+  integratorArea.appendChild(startInt);
+  modulesContainer.appendChild(integratorArea);
+}
+
+renderMenuAndModules();
+updateGlobalScoreDisplay();
+
+/* ---------- Show/hide modules ---------- */
+function hideAllModules(){ document.querySelectorAll('.module-area').forEach(n => n.classList.remove('active')); }
+function showModule(id){
+  hideAllModules();
+  document.getElementById('modarea_'+id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ---------- Image fallback loader (tries gif -> png -> jpg) ---------- */
+function setImageWithFallback(imgEl, base){
+  // Try gif first, then png, then jpg
+  const exts = ['.gif','.png','.jpg'];
+  let idx = 0;
+  function tryNext(){
+    if(idx >= exts.length){ // no image found: show placeholder
+      imgEl.style.display = 'none';
+      const ph = document.createElement('div');
+      ph.className = 'placeholder';
+      ph.textContent = 'Imagen no encontrada';
+      const parent = imgEl.parentElement;
+      if(parent && !parent.querySelector('.placeholder')) parent.insertBefore(ph, imgEl.nextSibling);
+      return;
+    }
+    const candidate = base + exts[idx++];
+    imgEl.src = candidate;
+    // set a one-time error handler to try next
+    imgEl.onerror = function(){ tryNext(); };
+    imgEl.onload = function(){ imgEl.onerror = null; };
+  }
+  tryNext();
+}
+
+/* ---------- Quiz utilities ---------- */
+function sample(arr, n){
+  const copy = arr.slice();
+  const res = [];
+  for(let i=0;i<n && copy.length;i++){
+    const idx = Math.floor(Math.random()*copy.length);
+    res.push(copy.splice(idx,1)[0]);
+  }
+  return res;
+}
+
+function startQuiz(modId){
+  const mod = modulesData.find(m=>m.id===modId);
+  if(!mod) return;
+  const questions = sample(mod.items, Math.min(5, mod.items.length)).map(item=>{
+    const correct = item;
+    const distractors = sample(mod.items.filter(i=>i.key!==item.key), Math.min(3, mod.items.length-1));
+    const choices = sample([correct, ...distractors], Math.min(4, 1+distractors.length));
+    return {prompt: correct, choices, correctKey: correct.key};
+  });
+  renderQuizArea('quiz_'+modId, questions, modId, false);
+}
+
+function startIntegrator(){
+  const pool = getPool();
+  const questions = sample(pool, Math.min(10, pool.length)).map(item=>{
+    const correct = item;
+    const distractors = sample(pool.filter(i=>i.key!==item.key), Math.min(3, pool.length-1));
+    const choices = sample([correct, ...distractors], Math.min(4, 1+distractors.length));
+    return {prompt: correct, choices, correctKey: correct.key};
+  });
+  renderQuizArea('quiz_integrador', questions, 'integrador', true);
+}
+
+/* Conversaciones: preguntas que deben responder combinando señas */
+function startConversaciones(){
+  const pool = getPool();
+  // Example conversation prompts (you can expand later)
+  const convPrompts = [
+    {text: 'Saluda y di "me gusta" + animal', pattern: ['hola','me-gusta','?animal']},
+    {text: 'Di "Sí" si te gusta el color rojo', pattern: ['si','?color']},
+    {text: 'Pregunta "¿Dónde está?" + objeto (animal)', pattern: ['dondeesta','?animal']},
+    {text: 'Saluda y di tu día (ej: lunes)', pattern: ['hola','?dia']},
+    {text: 'Saluda y di tu mes (ej: enero)', pattern: ['hola','?mes']},
+    {text: 'Saluda y di tu día (ej: lunes) + mes (ej: enero)', pattern: ['hola','?dia','?mes']},
+    {text: 'Di numero (ej: 1) + mes (ej: enero)', pattern: ['?numero','?mes']},
+    {text: 'Di "No" si no te gusta el animal', pattern: ['no','?animal']}
+  ];
+
+  // Build concrete questions by substituting ?animal/?color/?dia/?mes/?numero with pool items
+  const animals = pool.filter(p=>p.module==='animales');
+  const colors = pool.filter(p=>p.module==='colores');
+  const dias = pool.filter(p=>p.module==='dias');
+  const meses = pool.filter(p=>p.module==='meses');
+  const numeros = pool.filter(p=>p.module==='numeros');
+
+
+  const questions = [];
+  convPrompts.forEach(cp=>{
+    // for each prompt, create up to 3 concrete variants
+    for(let i=0;i<3;i++){
+      let pattern = [];
+      cp.pattern.forEach(token=>{
+        if(token==='?animal') pattern.push( animals[Math.floor(Math.random()*animals.length)] );
+        else if(token==='?color') pattern.push( colors[Math.floor(Math.random()*colors.length)] );
+        else if(token==='?dia') pattern.push( dias[Math.floor(Math.random()*dias.length)] );
+        else if(token==='?mes') pattern.push( meses[Math.floor(Math.random()*meses.length)] );
+        else if(token==='?numero') pattern.push( numeros[Math.floor(Math.random()*numeros.length)] );
+        else pattern.push(token); // literal token like 'hola' (string)
+      });
+      questions.push({text: cp.text, pattern});
+    }
+  });
+
+  // For each question, create choices: one correct combination, 3 wrong combos
+  const qobjs = questions.map(q=>{
+    // correct combo is pattern mapped to item keys (strings or items)
+    const correctCombo = q.pattern.map(p => typeof p === 'string' ? p : p.key);
+    // Build three wrong combos by replacing one element
+    const distractors = [];
+    for(let i=0;i<3;i++){
+      const wrong = correctCombo.slice();
+      // replace a random index with a random pool item key (same module if possible)
+      const idx = Math.floor(Math.random()*wrong.length);
+      const targetModule = typeof q.pattern[idx] === 'string' ? null : q.pattern[idx].module;
+      let replacement;
+      if(targetModule){
+        const candidates = pool.filter(pp=>pp.module===targetModule && pp.key!==wrong[idx]);
+        replacement = candidates.length ? candidates[Math.floor(Math.random()*candidates.length)].key : pool[Math.floor(Math.random()*pool.length)].key;
+      } else {
+        // replace literal token with random other literal or keep
+        replacement = wrong[idx];
+      }
+      wrong[idx] = replacement;
+      distractors.push(wrong);
+    }
+    // Build choices array: correct + distractors, then shuffle
+    const choices = sample([correctCombo, ...distractors], 4);
+    return {prompt: q.text, pattern: q.pattern, choices, correct: correctCombo};
+  });
+
+  renderConversaciones('quiz_conversaciones', qobjs);
+}
+
+/* Render quiz for regular modules/integrator */
+function renderQuizArea(containerId, questions, modId, isIntegrator){
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  let qIndex = 0;
+  let correctCount = 0;
+
+  function renderQuestion(){
+    container.innerHTML = '';
+    if(qIndex >= questions.length){
+      const result = createElem('div',{class:'card'}, createElem('h3',{},'Resultado'));
+      const score = correctCount * 10;
+      result.appendChild(createElem('div',{class:'small'}, `Respuestas correctas: ${correctCount} / ${questions.length}`));
+      result.appendChild(createElem('div',{style:'margin-top:8px;font-weight:800'}, `Puntos obtenidos: ${score}`));
+      container.appendChild(result);
+      addPoints(score);
+      return;
+    }
+    const q = questions[qIndex];
+    const qCard = createElem('div',{class:'question'});
+    // prompt image or text
+    const promptBox = createElem('div',{}, createElem('div',{style:'font-weight:800'}, '¿Qué significa esta seña?'));
+    const img = createElem('img',{alt:q.prompt.name, style:'width:120px;height:80px;object-fit:contain;border-radius:8px;'});
+    setImageWithFallback(img, q.prompt.imgBase);
+    promptBox.appendChild(img);
+    qCard.appendChild(promptBox);
+
+    // choices
+    const choicesBox = createElem('div',{class:'choices'});
+    q.choices.forEach(ch=>{
+      const chBtn = createElem('div',{class:'choice'}, ch.name);
+      chBtn.addEventListener('click', ()=>{
+        Array.from(choicesBox.children).forEach(c => c.style.pointerEvents='none');
+        if(ch.key === q.correctKey){
+          chBtn.classList.add('correct');
+          correctCount++;
+        } else {
+          chBtn.classList.add('wrong');
+          Array.from(choicesBox.children).forEach(c => {
+            if(c.textContent.trim() === q.choices.find(cc=>cc.key===q.correctKey).name) c.classList.add('correct');
+          });
+        }
+        setTimeout(()=>{ qIndex++; renderQuestion(); }, 700);
+      });
+      choicesBox.appendChild(chBtn);
+    });
+
+    qCard.appendChild(choicesBox);
+    container.appendChild(qCard);
+    container.appendChild(createElem('div',{class:'small', style:'margin-top:6px'}, `Pregunta ${qIndex+1} de ${questions.length}`));
+  }
+
+  renderQuestion();
+}
+
+/* Render conversaciones quiz */
+function renderConversaciones(containerId, questions){
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  let qIndex = 0;
+  let correctCount = 0;
+
+  function renderQ(){
+    container.innerHTML = '';
+    if(qIndex >= questions.length){
+      const res = createElem('div',{class:'card'}, createElem('h3',{},'Resultado'));
+      const score = correctCount * 15;
+      res.appendChild(createElem('div',{class:'small'}, `Respuestas correctas: ${correctCount} / ${questions.length}`));
+      res.appendChild(createElem('div',{style:'margin-top:8px;font-weight:800'}, `Puntos obtenidos: ${score}`));
+      container.appendChild(res);
+      addPoints(score);
+      return;
+    }
+    const q = questions[qIndex];
+    const card = createElem('div',{class:'question'});
+    card.appendChild(createElem('div',{style:'font-weight:800;font-size:1.03rem'}, q.prompt));
+    card.appendChild(createElem('div',{class:'small', style:'margin-top:6px'}, 'Elige la combinación correcta de señas'));
+    // build choice elements (each choice is an array of keys)
+    const choicesBox = createElem('div',{class:'choices'});
+    q.choices.forEach(choiceArray=>{
+      const choiceBtn = createElem('div',{class:'choice conversation-choice'});
+      // show small thumbs for each item in combination if possible
+      const thumbs = createElem('div',{class:'thumbs'});
+      choiceArray.forEach(k => {
+        const item = findItemByKey(k);
+        if(item){
+          const timg = createElem('img',{alt:item.name});
+          setImageWithFallback(timg, item.imgBase);
+          thumbs.appendChild(timg);
+        } else {
+          // fallback: text bubble
+          const tspan = createElem('div',{}, k);
+          thumbs.appendChild(tspan);
+        }
+      });
+      choiceBtn.appendChild(thumbs);
+      // label (textual representation)
+      const label = createElem('div',{}, choiceArray.map(k=>{
+        const item = findItemByKey(k);
+        return item ? item.name : k;
+      }).join(' + '));
+      choiceBtn.appendChild(label);
+
+      choiceBtn.addEventListener('click', ()=>{
+        Array.from(choicesBox.children).forEach(c=>c.style.pointerEvents='none');
+        const correct = arraysEqual(choiceArray, q.correct);
+        if(correct){
+          choiceBtn.classList.add('correct');
+          correctCount++;
+        } else {
+          choiceBtn.classList.add('wrong');
+          // highlight correct choice visually
+          Array.from(choicesBox.children).forEach(c=>{
+            const txt = c.querySelector('div:last-child').textContent.trim();
+            const correctTxt = q.correct.map(k=>{
+              const it = findItemByKey(k); return it?it.name:k;
+            }).join(' + ');
+            if(txt === correctTxt) c.classList.add('correct');
+          });
+        }
+        setTimeout(()=>{ qIndex++; renderQ(); }, 900);
+      });
+
+      choicesBox.appendChild(choiceBtn);
+    });
+
+    card.appendChild(choicesBox);
+    container.appendChild(card);
+    container.appendChild(createElem('div',{class:'small', style:'margin-top:6px'}, `Pregunta ${qIndex+1} de ${questions.length}`));
+  }
+
+  renderQ();
+}
+
+/* Utility: find item by key across modules */
+function findItemByKey(k){
+  for(const m of modulesData){
+    for(const it of m.items){
+      if(it.key === k) return it;
+    }
+  }
+  return null;
+}
+function arraysEqual(a,b){ if(!a||!b || a.length!==b.length) return false; for(let i=0;i<a.length;i++) if(a[i]!==b[i]) return false; return true; }
+
+/* ---------- Download template list (with new folders) ---------- */
+document.getElementById('downloadTemplate').addEventListener('click', ()=> {
+  const template = generateTemplateList();
+  const blob = new Blob([template], {type:'text/plain;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'plantilla_imagenes_Senakids_listado.txt';
+  document.body.appendChild(a);
+  a.click(); a.remove(); URL.revokeObjectURL(url);
+});
+
+function generateTemplateList(){
+  let lines = ['Coloca tus imágenes/gifs en la carpeta "img/" siguiendo estas rutas sugeridas. (Se intentará .gif → .png → .jpg)'];
+  modulesData.forEach(m=>{
+    if(m.id === 'conversaciones') return;
+    lines.push('');
+    lines.push('Módulo: '+m.title);
+    m.items.forEach(it=>{
+      lines.push(` - ${it.imgBase}.gif  (también puede ser .png o .jpg)    clave: ${it.key}`);
+    });
+  });
+  lines.push('');
+  lines.push('Ejemplo: img/animales/mono.gif');
+  lines.push('Carpeta "dias": img/dias/lunes.png (o .gif si hay movimiento).');
+  return lines.join('\n');
+}
+
+/* Reset progress */
+document.getElementById('resetProgress').addEventListener('click', ()=>{
+  if(confirm('¿Seguro que quieres reiniciar el progreso?')){
+    resetScore();
+    alert('Progreso reiniciado.');
+  }
+});
+
+/* ---------- Initialize: show first module by default ---------- */
+showModule(modulesData[0].id);
+updateGlobalScoreDisplay();
+
+
+ <!-- PWA: registrar Service Worker -->
+ <script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("service-worker.js")
+        .then(reg => console.log("Service Worker registrado:", reg))
+        .catch(err => console.error("Error al registrar el SW:", err));
+    });
+  }
+  
   </script>
 </body>
 </html>
