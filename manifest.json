@@ -3,21 +3,20 @@
   "short_name": "Señakids",
   "description": "Aprende Lengua de Señas Mexicana con módulos interactivos.",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#572364",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "ima/icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "icon-512.png",
+      "src": "ima/icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
   ]
 }
-
-
